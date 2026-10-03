@@ -1,6 +1,6 @@
 import './style.css';
 import { mountPuzzle } from './labs/puzzle';
-import { mountBlocks } from './labs/blocks';
+import { mountBlockHub } from './labs/block-hub';
 import { mountBox } from './labs/box';
 import { readProgress, saveProgress } from './storage';
 import type { LabId, MountLab } from './types';
@@ -35,7 +35,7 @@ app.innerHTML = `
   </main>
   <footer class="site-footer wrap"><span>✦ カタチのほし</span><span>あせらず、ためして、たしかめよう。</span></footer>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <dialog id="reset-dialog" class="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">記録をリセットしますか？</h2><p>このブラウザの「ひらめきの記録」をリセットします。</p><form method="dialog" class="button-row"><button type="submit" class="button button-soft" value="cancel">やめる</button><button type="submit" class="button button-primary" value="reset">リセットする</button></form></dialog>
+  <dialog id="reset-dialog" class="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">記録をリセットしますか？</h2><p>星の記録をリセットします。作った建物と制作途中は、基地からまたひらけます。</p><form method="dialog" class="button-row"><button type="submit" class="button button-soft" value="cancel">やめる</button><button type="submit" class="button button-primary" value="reset">リセットする</button></form></dialog>
 `;
 observeFurigana(app);
 
@@ -45,7 +45,7 @@ let current: LabId | undefined;
 let sound = false;
 let toastTimer = 0;
 const content = document.getElementById('lab-content')!;
-const modules: Record<LabId, MountLab> = { puzzle: mountPuzzle, blocks: mountBlocks, box: mountBox };
+const modules: Record<LabId, MountLab> = { puzzle: mountPuzzle, blocks: mountBlockHub, box: mountBox };
 const names: Record<LabId, string> = { puzzle: 'かたち工房', blocks: 'ブロック建築', box: 'はこづくり研究所' };
 
 function showProgress() {
@@ -76,6 +76,7 @@ function openLab(id: LabId) {
   document.querySelectorAll<HTMLButtonElement>('[data-lab]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.lab === id)));
   cleanup = modules[id](content, {
     reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+    onNarrate: speak,
     onComplete(mission, label) {
       if (progress.completed[mission]) return;
       progress.completed[mission] = label;

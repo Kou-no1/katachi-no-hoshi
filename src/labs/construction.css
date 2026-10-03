@@ -1,0 +1,51 @@
+.block-activities { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin-bottom: 20px; }
+.construction-missions { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-bottom: 16px; }
+.construction-intro { margin-bottom: 18px; }.construction-intro .task-description { margin-bottom: 10px; }
+.stage-workspace.construction-workspace { grid-template-columns: minmax(0,1fr) 196px; }
+.construction-worlds { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); min-width: 0; }
+.construction-worlds-free { grid-template-columns: minmax(0,1fr); }
+.construction-world { display: flex; flex-direction: column; min-width: 0; background: #f9f6ed; }
+.construction-world + .construction-world { border-left: 1px solid var(--line); }
+.construction-world h3 { padding: 20px 14px 10px; text-align: center; font-size: 15px; line-height: 2; }
+.construction-world h3 span { color: var(--muted); font-size: 12px; }
+.construction-scene.canvas-host { flex: 1; min-height: 300px; height: auto; }
+.construction-scene svg { display: block; width: 100%; height: 100%; position: absolute; inset: 0; }
+.construction-scene canvas { position: absolute; inset: 0; }
+.construction-front { text-align: center; padding: 8px 0 15px; }
+.construction-front > span { color: #cc8063; }
+.stage-controller.construction-controller { display: flex; flex-direction: column; gap: 10px; padding: 18px 12px; }
+.construction-controller h3 { font-size: 14px; line-height: 2; }
+.construction-views,.construction-actions,.construction-layers { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+.construction-controller .button { min-width: 44px; padding: 8px 3px; font-size: 12px; }
+.construction-grid { display: grid; grid-template-columns: repeat(3,minmax(44px,1fr)); gap: 4px; }
+.construction-cell.button { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 52px; padding: 2px; line-height: 1.2; background: #fffdf8; }
+.construction-cell span { font-size: 10px; color: #849b85; }.construction-cell strong { font-size: 18px; }
+.construction-origin.button { background: #f6e7bc; border-color: #c1a761; }.construction-origin span { color: #9e7521; }
+.construction-hint-cell { outline: 3px solid #b56a37; outline-offset: -3px; }
+.construction-grid-front { text-align: center; }
+#construction-hints { display: flex; flex-direction: column; gap: 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.construction-result { border-top: 1px solid var(--line); padding: 20px; }
+.construction-result .feedback { margin: 0 0 16px; min-height: 30px; line-height: 2.2; }
+.construction-result > .small-text { margin-top: 12px; }
+.base-cards { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; margin: 24px 0; }
+.base-card { border: 1px dashed #c8d8c9; border-radius: 18px; padding: 16px; text-align: center; }
+.base-card-earned { border-style: solid; background: #edf3e8; }
+.base-preview { height: 170px; display: grid; place-items: center; }.base-preview svg { width: 100%; height: 100%; }.base-preview > span { color: #a2b49a; font-size: 70px; }
+.base-card h3 { font-size: 15px; line-height: 2; }.base-card .small-text { margin: 10px 0; }
+@media(max-width:760px) {
+  .block-activities { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .construction-worlds { grid-template-columns: minmax(0,1fr); }
+  .construction-world + .construction-world { border-left: 0; border-top: 1px solid var(--line); }
+  .construction-scene.canvas-host { min-height: 220px; }
+  .stage-workspace.construction-workspace { grid-template-columns: minmax(0,1fr) 156px; }
+  .stage-controller.construction-controller { padding: 14px 8px; }
+  .base-cards { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+  .base-card { padding: 12px; }.base-preview { height: 140px; }
+}
+@media(max-width:460px) {
+  .stage-workspace.construction-workspace { grid-template-columns: minmax(0,1fr) 156px; }
+  .stage-controller.construction-controller { padding: 14px 8px; }
+  .construction-missions .button { font-size: 11px; padding: 10px 4px; }
+  .construction-world h3 { padding-inline: 5px; font-size: 13px; }
+  .construction-world h3 span { display: block; }
+}
