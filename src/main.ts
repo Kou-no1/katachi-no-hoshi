@@ -4,6 +4,7 @@ import { mountBlocks } from './labs/blocks';
 import { mountBox } from './labs/box';
 import { readProgress, saveProgress } from './storage';
 import type { LabId, MountLab } from './types';
+import { baseText, observeFurigana } from './shared/furigana';
 
 const app = document.getElementById('app')!;
 const shapes = {
@@ -34,7 +35,9 @@ app.innerHTML = `
   </main>
   <footer class="site-footer wrap"><span>✦ カタチのほし</span><span>あせらず、ためして、たしかめよう。</span></footer>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="reset-dialog" class="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">記録をリセットしますか？</h2><p>このブラウザの「ひらめきの記録」をリセットします。</p><form method="dialog" class="button-row"><button type="submit" class="button button-soft" value="cancel">やめる</button><button type="submit" class="button button-primary" value="reset">リセットする</button></form></dialog>
 `;
+observeFurigana(app);
 
 let progress = readProgress();
 let cleanup: (() => void) | undefined;
@@ -86,7 +89,7 @@ function openLab(id: LabId) {
       speak('新しいひらめき。星を一つ見つけたよ。');
     },
   });
-  speak(`${names[id]}。${content.querySelector('.task-title')?.textContent ?? ''} ${content.querySelector('.task-description')?.textContent ?? ''}`);
+  speak(`${names[id]}。${baseText(content.querySelector('.task-title'))} ${baseText(content.querySelector('.task-description'))}`);
 }
 
 document.querySelectorAll<HTMLButtonElement>('[data-lab]').forEach(button => {
@@ -104,11 +107,13 @@ soundButton.addEventListener('click', () => {
   sound = !sound;
   soundButton.textContent = `よみあげ：${sound ? 'オン' : 'オフ'}`;
   soundButton.setAttribute('aria-pressed', String(sound));
-  if (sound) speak(`${names[current ?? 'puzzle']}。${content.querySelector('.task-title')?.textContent ?? ''} ${content.querySelector('.task-description')?.textContent ?? ''}`);
+  if (sound) speak(`${names[current ?? 'puzzle']}。${baseText(content.querySelector('.task-title'))} ${baseText(content.querySelector('.task-description'))}`);
   else speechSynthesis.cancel();
 });
-document.getElementById('reset-progress')!.addEventListener('click', () => {
-  if (!window.confirm('このブラウザの「ひらめきの記録」をリセットしますか？')) return;
+const resetDialog = document.getElementById('reset-dialog') as HTMLDialogElement;
+document.getElementById('reset-progress')!.addEventListener('click', () => { resetDialog.returnValue=''; resetDialog.showModal(); });
+resetDialog.addEventListener('close', () => {
+  if (resetDialog.returnValue !== 'reset') return;
   progress = { version: 1, completed: {} };
   saveProgress(progress);
   showProgress();

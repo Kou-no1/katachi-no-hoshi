@@ -8,8 +8,15 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
     <div class="lab-layout box-lab">
       <div class="lab-stage">
         <div class="stage-toolbar"><h2>ひらいた形から、はこへ</h2><span class="badge">ゆっくり折ってみよう</span></div>
-        <div class="canvas-host box-canvas" role="img" aria-label="６つの番号つきの面を折ってつくる立方体。ドラッグで見る向きを変えられます。"></div>
-        <div class="box-fold-controls"><div class="box-fold-label"><label for="box-fold">折りぐあい</label><output id="box-fold-output">0%</output></div><input id="box-fold" type="range" min="0" max="100" step="1" value="0" aria-label="箱の折りぐあい"><div class="button-row"><button type="button" class="button button-soft" data-fold="0">ひらく</button><button type="button" class="button button-primary" data-fold="1">はこにする</button><button type="button" class="button" id="box-home-view">見やすい向き</button></div></div>
+        <div class="stage-workspace">
+          <div class="canvas-host box-canvas" role="img" aria-label="６つの番号つきの面を折ってつくる立方体。ドラッグで見る向きを変えられます。"></div>
+          <aside class="stage-controller box-fold-controls" aria-label="箱を折る操作">
+            <h3 class="box-controller-title">折ってみよう</h3>
+            <div class="box-fold-label"><label for="box-fold">折りぐあい</label><output id="box-fold-output">0%</output></div>
+            <input id="box-fold" type="range" min="0" max="100" step="1" value="0" aria-label="箱の折りぐあい">
+            <div class="button-row"><button type="button" class="button button-soft" data-fold="0">ひらく</button><button type="button" class="button button-primary" data-fold="1">はこにする</button><button type="button" class="button" id="box-home-view">見やすい向き</button></div>
+          </aside>
+        </div>
         <p class="stage-caption">スライダーで少しずつ折れるよ。箱をなでると、見る向きが変わるよ。</p>
       </div>
       <div class="lab-sidebar">

@@ -1,6 +1,10 @@
-.box-fold-controls { padding: 18px 22px; border-top: 1px solid var(--line); }
-.box-fold-label { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
+.box-fold-controls { display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+.box-controller-title { margin: 0; font-size: .9rem; line-height: 1.7; }
+.box-fold-label { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 5px; font-size: 12px; color: var(--muted); }
 .box-fold-label output { font-variant-numeric: tabular-nums; font-weight: 700; }
+.box-fold-controls .button-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
+.box-fold-controls .button { width: 100%; min-width: 0; min-height: 44px; padding: .65rem .35rem; white-space: normal; line-height: 1.5; }
+.box-fold-controls input[type="range"] { width: 100%; min-width: 0; min-height: 44px; margin: 0; }
 .box-answers { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 7px; margin-bottom: 16px; }
 .box-answer { padding: 6px !important; min-width: 0; }
 .box-answer > span { display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 6px; font-size: 17px; color: #294f49; }

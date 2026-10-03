@@ -22,12 +22,21 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
           <span class="badge">かたち工房</span>
           <span class="small-text">選ぶ → 動かす → たしかめる</span>
         </div>
-        <div class="canvas-host puzzle-canvas">
-          <svg class="puzzle-board" viewBox="0 0 640 420" role="group" aria-label="ピースを動かす場所。矢印キーで移動、Rで回転、数字キーでピースを選べます。" tabindex="0"></svg>
-        </div>
-        <div class="puzzle-underboard">
-          <div class="puzzle-piece-select" aria-label="動かすピースを選ぶ"></div>
-          <p class="small-text">ピースを運ぼう。選んでから、置く場所をタップしてもいいよ。</p>
+        <div class="stage-workspace">
+          <div class="canvas-host puzzle-canvas">
+            <svg class="puzzle-board" viewBox="0 0 640 420" role="group" aria-label="ピースを動かす場所。矢印キーで移動、Rで回転、数字キーでピースを選べます。" tabindex="0"></svg>
+          </div>
+          <div class="stage-controller puzzle-controller">
+            <h3 class="panel-title">動かそう</h3>
+            <div class="puzzle-piece-select" aria-label="動かすピースを選ぶ"></div>
+            <div class="puzzle-dpad" aria-label="選んだピースを動かす">
+              <button class="button button-icon" data-action="up" aria-label="上へ動かす">↑</button>
+              <button class="button button-icon" data-action="down" aria-label="下へ動かす">↓</button>
+              <button class="button button-icon" data-action="left" aria-label="左へ動かす">←</button>
+              <button class="button button-icon" data-action="right" aria-label="右へ動かす">→</button>
+            </div>
+            <button class="button button-soft puzzle-rotate" data-action="rotate" aria-label="右に90度回す"><span aria-hidden="true">↻</span>くるっと</button>
+          </div>
         </div>
       </div>
       <aside class="lab-sidebar">
@@ -41,15 +50,8 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
           </div>
         </div>
         <div class="panel puzzle-controls">
-          <h3 class="panel-title">ピースを動かそう</h3>
           <p class="small-text" data-selected></p>
-          <div class="puzzle-dpad" aria-label="選んだピースを動かす">
-            <button class="button button-icon puzzle-up" data-action="up" aria-label="上へ動かす">↑</button>
-            <button class="button button-icon puzzle-left" data-action="left" aria-label="左へ動かす">←</button>
-            <button class="button button-soft puzzle-rotate" data-action="rotate" aria-label="右に90度回す">↻<span>くるっと</span></button>
-            <button class="button button-icon puzzle-right" data-action="right" aria-label="右へ動かす">→</button>
-            <button class="button button-icon puzzle-down" data-action="down" aria-label="下へ動かす">↓</button>
-          </div>
+          <p class="small-text">ピースを運ぼう。選んでから、置く場所をタップしてもいいよ。</p>
           <button class="button button-primary puzzle-check" data-action="check">これで どうかな？</button>
           <p class="feedback puzzle-feedback" aria-live="polite" aria-atomic="true" data-feedback></p>
           <div class="button-row">
@@ -63,6 +65,8 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
     </div>`;
 
   const svg = container.querySelector<SVGSVGElement>('.puzzle-board')!;
+  const canvas = container.querySelector<HTMLElement>('.puzzle-canvas')!;
+  let compactBoard = canvas.clientWidth < 360;
   const feedback = container.querySelector<HTMLElement>('[data-feedback]')!;
   const pieceSelect = container.querySelector<HTMLElement>('.puzzle-piece-select')!;
   const selectedText = container.querySelector<HTMLElement>('[data-selected]')!;
@@ -88,16 +92,19 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
         <text x="${center.x}" y="${center.y + 7}" text-anchor="middle" class="puzzle-piece-number">${piece.label}</text>
       </g>`;
     }).join('');
+    const frame = compactBoard ? { x: 340, y: 70, width: 240, height: 510 } : { x: 0, y: 0, width: 640, height: 420 };
+    svg.setAttribute('viewBox', `${frame.x} ${frame.y} ${frame.width} ${frame.height}`);
+    svg.classList.toggle('is-compact', compactBoard);
     svg.innerHTML = `
       <defs>
         <pattern id="puzzle-dot-grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="0" cy="0" r="1.2" fill="#d7dfd3"/></pattern>
         <filter id="puzzle-piece-shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#294f49" flood-opacity=".10"/></filter>
       </defs>
-      <rect width="640" height="420" rx="20" fill="#fcf9ef"/>
-      <rect x="20" y="100" width="600" height="280" fill="url(#puzzle-dot-grid)"/>
-      <text x="155" y="62" text-anchor="middle" class="puzzle-board-label">ピースを はこぼう</text>
-      <text x="460" y="62" text-anchor="middle" class="puzzle-board-label">ここに ぴったり！</text>
-      <path d="M290 66 C320 46 345 46 366 62 M353 53 L366 62 L352 68" stroke="#aebdb0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="${frame.x}" y="${frame.y}" width="${frame.width}" height="${frame.height}" rx="20" fill="#fcf9ef"/>
+      <rect x="${frame.x + 20}" y="${frame.y + 30}" width="${frame.width - 40}" height="${frame.height - 60}" fill="url(#puzzle-dot-grid)"/>
+      ${compactBoard
+        ? '<text x="460" y="110" text-anchor="middle" class="puzzle-board-label">ここへ！</text><text x="460" y="295" text-anchor="middle" class="puzzle-board-label">ピース</text>'
+        : '<text x="155" y="62" text-anchor="middle" class="puzzle-board-label">ピースを はこぼう</text><text x="460" y="62" text-anchor="middle" class="puzzle-board-label">ここに ぴったり！</text><path d="M290 66 C320 46 345 46 366 62 M353 53 L366 62 L352 68" stroke="#aebdb0" stroke-width="2.5" fill="none" stroke-linecap="round"/>'}
       <polygon points="${pointsAttribute(current.target)}" fill="#efe9d6" stroke="#9b9479" stroke-width="3" stroke-dasharray="7 6" stroke-linejoin="round"/>
       ${pieces}`;
     selectedText.textContent = `いま選んでいるのは ピース${current.pieces[selectedIndex].label}`;
@@ -109,10 +116,16 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
     });
   }
 
+  function initialPose(index: number): PiecePose {
+    if (!compactBoard) return { ...challenge().pieces[index].initialPose };
+    if (challenge().pieces.length === 1) return { x: 460, y: 440, rotation: 0 };
+    return index === 0 ? { x: 420, y: 360, rotation: 0 } : { x: 500, y: 500, rotation: 0 };
+  }
+
   function loadChallenge(index: number): void {
     challengeIndex = index;
     selectedIndex = 0;
-    poses = challenge().pieces.map((piece) => ({ ...piece.initialPose }));
+    poses = challenge().pieces.map((_, pieceIndex) => initialPose(pieceIndex));
     showHint = false;
     placementArmed = false;
     pointer = null;
@@ -136,8 +149,8 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
 
   function updatePose(x: number, y: number): void {
     const pose = poses[selectedIndex];
-    pose.x = snapped(x, 80, 560);
-    pose.y = snapped(y, 100, 340);
+    pose.x = snapped(x, compactBoard ? 400 : 80, compactBoard ? 520 : 560);
+    pose.y = snapped(y, compactBoard ? 140 : 100, compactBoard ? 500 : 340);
     renderBoard();
   }
 
@@ -279,6 +292,22 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
   svg.addEventListener('pointercancel', onPointerCancel);
   svg.addEventListener('keydown', onKeyDown);
   loadChallenge(0);
+  const resizeObserver = new ResizeObserver(() => {
+    const nextCompact = canvas.clientWidth < 360;
+    if (nextCompact === compactBoard) return;
+    if (pointer && svg.hasPointerCapture(pointer.id)) svg.releasePointerCapture(pointer.id);
+    pointer = null;
+    compactBoard = nextCompact;
+    poses = poses.map((pose, index) => {
+      // Keep pieces at the target in place; only move the off-board play area.
+      if (pose.x >= 380 && pose.x <= 540 && pose.y >= 120 && pose.y <= 280) {
+        return compactBoard ? { ...pose, x: snapped(pose.x,400,520), y: snapped(pose.y,140,500) } : pose;
+      }
+      return { ...initialPose(index), rotation: pose.rotation };
+    });
+    renderBoard();
+  });
+  resizeObserver.observe(canvas);
 
   return () => {
     container.removeEventListener('click', onClick);
@@ -287,6 +316,7 @@ export function mountPuzzle(container: HTMLElement, context: GameContext): () =>
     svg.removeEventListener('pointerup', onPointerUp);
     svg.removeEventListener('pointercancel', onPointerCancel);
     svg.removeEventListener('keydown', onKeyDown);
+    resizeObserver.disconnect();
     pointer = null;
   };
 }

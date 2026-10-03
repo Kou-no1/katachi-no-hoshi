@@ -75,8 +75,14 @@ export function mountBlocks(container: HTMLElement, context: GameContext): () =>
   container.innerHTML = `<div class="blocks-building-picker" aria-label="建物をえらぶ"></div>
     <div class="lab-layout">
       <section class="lab-stage" aria-label="積み木の建物">
-        <div class="stage-toolbar">${(['diagonal', 'front', 'side', 'top'] as View[]).map((name) => `<button type="button" class="button button-soft" data-camera="${name}" aria-pressed="${name === view}">${VIEW_NAMES[name]}</button>`).join('')}</div>
-        <div class="canvas-host" id="blocks-canvas" role="img" aria-label="積み木の建物。ボタンで見る向きを変えられます。"></div>
+        <div class="stage-toolbar"><h2>建物をたんけん</h2><span class="badge">くるくる回せるよ</span></div>
+        <div class="stage-workspace">
+          <div class="canvas-host" id="blocks-canvas" role="img" aria-label="積み木の建物。ボタンで見る向きを変えられます。"></div>
+          <aside class="stage-controller blocks-controller" aria-label="見る向きの操作">
+            <h3 class="blocks-controller-title">見る向き</h3>
+            <div class="blocks-camera-buttons">${(['diagonal', 'front', 'side', 'top'] as View[]).map((name) => `<button type="button" class="button button-soft" data-camera="${name}" aria-pressed="${name === view}">${VIEW_NAMES[name]}</button>`).join('')}</div>
+          </aside>
+        </div>
         <div class="blocks-stage-caption"><span id="blocks-view-label">ななめから 見ています</span><span id="blocks-interaction">指やマウスで くるくる回せるよ</span></div>
       </section>
       <aside class="lab-sidebar">
