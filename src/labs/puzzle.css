@@ -1,0 +1,35 @@
+.puzzle-toolbar { gap: 12px; flex-wrap: wrap; }
+.puzzle-canvas { height: clamp(260px, 43vw, 420px); overflow: hidden; background: #fcf9ef; }
+.puzzle-board { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; outline-offset: -4px; border-radius: 20px; }
+.puzzle-board:focus-visible { outline: 3px solid #49796c; }
+.puzzle-board-label { fill: #52675b; font-size: 17px; font-weight: 600; pointer-events: none; }
+.puzzle-piece { cursor: grab; filter: url(#puzzle-piece-shadow); }
+.puzzle-piece:active { cursor: grabbing; }
+.puzzle-piece-number { fill: #294f49; font-size: 23px; font-weight: 800; pointer-events: none; }
+.puzzle-underboard { padding: 14px 18px 4px; }
+.puzzle-underboard > p { margin: 12px 0 0; }
+.puzzle-piece-select { display: flex; gap: 10px; flex-wrap: wrap; }
+.puzzle-select-button { display: inline-flex; align-items: center; gap: 8px; }
+.puzzle-select-button > span { width: 18px; height: 18px; border-radius: 5px; border: 1px solid #294f49; }
+.puzzle-lab .is-selected.button { background: #e3efe6; border-color: #49796c; box-shadow: inset 0 0 0 1px #49796c; }
+.puzzle-challenges { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.puzzle-challenges .button { font-size: 13px; flex: 1 1 110px; }
+.puzzle-controls > .small-text { margin-top: 0; }
+.puzzle-dpad { display: grid; grid-template-columns: 54px minmax(84px, 1fr) 54px; grid-template-rows: 44px 58px 44px; gap: 8px; max-width: 254px; margin: 18px auto 22px; }
+.puzzle-up { grid-column: 2; grid-row: 1; justify-self: center; width: 54px; }
+.puzzle-left { grid-column: 1; grid-row: 2; }
+.puzzle-right { grid-column: 3; grid-row: 2; }
+.puzzle-down { grid-column: 2; grid-row: 3; justify-self: center; width: 54px; }
+.puzzle-rotate { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 23px; padding: 4px 10px !important; line-height: 1; }
+.puzzle-rotate span { font-size: 12px; margin-top: 6px; }
+.puzzle-check { width: 100%; min-height: 48px; }
+.puzzle-feedback { min-height: 55px; }
+.puzzle-feedback.is-success { color: #36694f; background: #e7f1e7; padding: 12px; border-radius: 12px; }
+.puzzle-hint[hidden] { display: none; }
+.puzzle-keyboard { margin: 18px 0 0; font-size: 11px; line-height: 1.7; }
+@media (max-width: 480px) {
+  .puzzle-underboard { padding: 14px 12px 4px; }
+  .puzzle-toolbar .small-text { font-size: 11px; }
+  .puzzle-canvas { height: 245px; }
+  .puzzle-keyboard { display: none; }
+}

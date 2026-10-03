@@ -1,0 +1,28 @@
+.blocks-building-picker { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 1rem; }
+.blocks-building-picker .button { flex: 1; min-width: 100px; }
+.blocks-mode-picker { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; margin: .9rem 0 1rem; }
+.blocks-number-picker { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+.blocks-number-picker .button { font-size: 1.35rem; min-height: 52px; padding: .45rem; }
+.blocks-selected { background: #294f49 !important; color: #fff !important; border-color: #294f49 !important; }
+.blocks-done { box-shadow: inset 0 -3px 0 #81b8a2; }
+.blocks-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 1rem 0; }
+.blocks-choice { background: #fff; border: 2px solid #dce5db; color: #294f49; border-radius: 16px; padding: .35rem; min-width: 0; cursor: pointer; font: inherit; }
+.blocks-choice svg { display: block; width: 100%; height: 92px; }
+.blocks-choice[aria-pressed="true"] { border-color: #294f49; background: #e4eee5; box-shadow: 0 0 0 2px #294f4920; }
+.blocks-choice:hover { border-color: #81b8a2; }
+.blocks-choice-label { display: block; font-weight: 800; margin: .2rem 0 .35rem; }
+.blocks-layer-picker { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .6rem; }
+.blocks-stage-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .35rem; padding: .75rem 1rem; font-size: .84rem; }
+.blocks-hint { border-top: 1px solid #dce5db; padding-top: 1rem; margin-top: 1rem; }
+.blocks-hint p { margin: .6rem 0 0; }
+.blocks-check { width: 100%; margin-top: 1rem; }
+.blocks-task-view { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .8rem; }
+.blocks-task-view .button { flex: 1; }
+.blocks-fallback svg { width: 100%; height: 100%; display: block; }
+.blocks-fallback { padding: 1rem; }
+@media (max-width: 480px) {
+  .blocks-building-picker .button { padding: .6rem .45rem; font-size: .8rem; }
+  .blocks-choices { gap: .35rem; }
+  .blocks-choice svg { height: 76px; }
+  .blocks-stage-caption { padding: .6rem; font-size: .76rem; }
+}
