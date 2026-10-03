@@ -1,0 +1,24 @@
+.solids-mode-picker { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-bottom:12px; }
+.solids-task-picker { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-bottom:18px; }
+.solids-task-picker .button { min-width:0; padding-inline:10px; }
+.solids-controller { display:flex; flex-direction:column; gap:12px; }
+.solids-controller h3 { font-size:13px; line-height:1.9; }
+.solids-controller .button { min-width:0; width:100%; padding-inline:5px; min-height:44px; }
+.solids-angle-label { display:flex; flex-wrap:wrap; justify-content:space-between; gap:5px; font-size:12px; line-height:2; }
+.solids-angle-label output { font-weight:800; font-variant-numeric:tabular-nums; }
+.solids-turn-buttons { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; }
+.solids-turn-buttons .button { font-size:11px; padding-inline:2px; }
+.solids-view-buttons { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+.solids-answers { display:grid; grid-template-columns:minmax(0,1fr); gap:8px; margin-bottom:14px; }
+.solids-answer { width:100%; text-align:left; min-height:44px; }
+.solids-check { width:100%; }
+.solids-hint { margin-top:14px; }
+.solids-reference { width:100%; max-width:190px; min-height:170px; margin:4px auto 14px; display:grid; place-items:center; }
+.solids-reference svg { display:block; width:100%; max-height:220px; }
+.solids-preview-placeholder { min-height:170px; width:100%; display:block; align-content:center; border:1px dashed #b8c9b8; border-radius:14px; color:var(--muted); font-size:12px; padding:14px; text-align:center; line-height:2; }
+.solids-fallback-note { padding:0 20px 16px; }
+.solids-canvas { min-height:430px; height:auto; }
+.solids-canvas canvas, .solids-canvas > svg { position:absolute; inset:0; }
+@media(max-width:760px) { .solids-task-picker { grid-template-columns:minmax(0,1fr); gap:6px; }.solids-task-picker .button { text-align:left; }.solids-turn-buttons { grid-template-columns:minmax(0,1fr); }.solids-view-buttons { grid-template-columns:minmax(0,1fr); }.solids-canvas { min-height:560px; }.solids-controller { gap:10px; }.solids-reference { max-width:170px; } }
+@media(max-width:460px) { .solids-mode-picker .button { padding-inline:6px; }.solids-controller h3 { font-size:12px; }.solids-angle-label { font-size:11px; }.solids-controller .button { font-size:12px; }.solids-fallback-note { padding-inline:14px; } }
+@media(prefers-reduced-motion:reduce) { .solids-lab * { transition:none !important; } }

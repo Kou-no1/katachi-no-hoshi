@@ -1,0 +1,51 @@
+.reconstruction-missions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+.reconstruction-intro { margin-bottom: 16px; }
+.reconstruction-intro .task-description { margin-bottom: 10px; }
+.reconstruction-projections { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }
+.reconstruction-projection { min-width: 0; padding: 12px; border: 2px solid #dce5d9; border-radius: 18px; background: #fcfaf2; text-align: center; }
+.reconstruction-projection h3 { font-size: 15px; line-height: 2; margin-bottom: 4px; }
+.reconstruction-projection svg { display: block; width: 100%; height: 160px; }
+.reconstruction-projection .small-text { min-height: 27px; font-size: 11px; }
+.reconstruction-projection.is-match { border-color: #81b8a2; background: #edf4e9; }
+.reconstruction-projection.is-mismatch { border-color: #cb926c; background: #fcf2e5; }
+.stage-workspace.reconstruction-workspace { grid-template-columns: minmax(0, 1fr) 188px; }
+.reconstruction-world { min-width: 0; background: #f9f6ed; }
+.reconstruction-world h3 { padding: 18px 10px 8px; text-align: center; font-size: 15px; line-height: 2; }
+.reconstruction-world h3 span { font-size: 12px; color: var(--muted); }
+.reconstruction-scene.canvas-host { height: 410px; }
+.reconstruction-scene > svg { position: absolute; inset: 0; }
+.reconstruction-front { padding: 8px 10px 16px; text-align: center; }
+.reconstruction-front > span { color: #c77c5d; }
+.stage-controller.reconstruction-controller { display: flex; flex-direction: column; gap: 10px; padding: 18px 12px; }
+.reconstruction-controller h3 { font-size: 14px; line-height: 2; }
+.reconstruction-controller .button { min-width: 44px; min-height: 44px; padding: 8px 3px; font-size: 12px; white-space: normal; }
+.reconstruction-views, .reconstruction-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.reconstruction-grid { display: grid; grid-template-columns: repeat(3, minmax(44px, 1fr)); gap: 4px; }
+.reconstruction-cell.button { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px; min-height: 50px; line-height: 1.2; background: #fffdf8; }
+.reconstruction-cell span { font-size: 10px; color: #8b9a85; }
+.reconstruction-cell strong { font-size: 18px; }
+.reconstruction-origin.button { background: #f6e7bc; border-color: #c1a761; }
+.reconstruction-origin span { color: #9e7521; }
+.reconstruction-grid-front { text-align: center; }
+.reconstruction-hint { padding: 10px; background: #f6edda; border-radius: 12px; }
+.reconstruction-result { padding: 18px 20px; border-top: 1px solid var(--line); }
+.reconstruction-result .feedback { margin: 0; line-height: 2.2; }
+@media (max-width: 760px) {
+  .stage-workspace.reconstruction-workspace { grid-template-columns: minmax(0, 1fr) 160px; }
+  .stage-controller.reconstruction-controller { padding: 14px 8px; }
+  .reconstruction-scene.canvas-host { height: 350px; }
+  .reconstruction-projections { gap: 8px; }
+  .reconstruction-projection { padding: 8px 3px; }
+  .reconstruction-projection h3 { font-size: 13px; }
+  .reconstruction-projection svg { height: 125px; }
+}
+@media (max-width: 460px) {
+  .stage-workspace.reconstruction-workspace { grid-template-columns: minmax(0, 1fr) 160px; }
+  .reconstruction-scene.canvas-host { height: 310px; }
+  .reconstruction-world h3 { font-size: 13px; padding-inline: 4px; }
+  .reconstruction-world h3 span { display: block; }
+  .reconstruction-missions .button { padding: 10px 4px; font-size: 11px; }
+  .reconstruction-projections { gap: 5px; }
+  .reconstruction-projection svg { height: 106px; }
+  .reconstruction-projection .small-text { font-size: 10px; }
+}

@@ -1,0 +1,10 @@
+.measure-modes { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:16px; }
+.measure-intro { margin-bottom:18px; }.measure-intro .task-description { margin-bottom:0; }
+.measure-world { display:flex;flex-direction:column;min-width:0;background:#f9f6ed; }
+.measure-world .canvas-host { flex:1;min-height:350px;height:auto; }.measure-world canvas,.measure-world svg { position:absolute;inset:0;width:100%;height:100%; }
+#measure-dimensions { padding:16px;text-align:center; }
+.measure-controller { display:flex;flex-direction:column;gap:12px; }.measure-controller h3 { font-size:14px;line-height:2; }
+.measure-controller .button { padding-inline:4px; }.measure-controller .number-input { width:100%;min-width:0; }
+.measure-views { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px; }.measure-layers { display:grid;gap:6px;margin-top:10px; }
+.measure-result { padding:18px;border-top:1px solid var(--line); }.measure-result .feedback { margin:0; }
+@media(max-width:760px){.stage-workspace.measure-workspace{grid-template-columns:minmax(0,1fr) 140px}.stage-controller.measure-controller{padding:14px 8px}.measure-world .canvas-host{min-height:330px}.measure-controller .button{font-size:12px}}

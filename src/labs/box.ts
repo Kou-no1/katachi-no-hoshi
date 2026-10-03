@@ -1,10 +1,13 @@
 import * as THREE from 'three';
-import { BOX_FACES, facePose, foldMatrices, oppositeFace, type FaceId } from '../geometry/box';
+import { CUBE_NETS, facePose, foldMatrices, oppositeFace, type FaceId } from '../geometry/box';
 import { createThreeStage } from '../shared/three-stage';
 import type { GameContext } from '../types';
 
 export function mountBox(container: HTMLElement, context: GameContext): () => void {
+  let netIndex=0;
+  const faces=()=>CUBE_NETS[netIndex].faces;
   container.innerHTML = `
+    <div class="box-net-picker" aria-label="展開図をえらぶ">${CUBE_NETS.map((net,i)=>`<button type="button" class="button button-soft" data-cube-net="${i}" aria-pressed="${i===0}">${i+1}. ${net.name}</button>`).join('')}</div>
     <div class="lab-layout box-lab">
       <div class="lab-stage">
         <div class="stage-toolbar"><h2>ひらいた形から、はこへ</h2><span class="badge">ゆっくり折ってみよう</span></div>
@@ -32,7 +35,7 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
   let questionIndex = 0;
   let animation = 0;
   let disposed = false;
-  const questions: FaceId[] = [1,2,4];
+  let questions: FaceId[] = [1,2,4];
   const meshes = new Map<FaceId, THREE.Mesh>();
   const labels = new Map<FaceId, THREE.Sprite>();
   const textures: THREE.Texture[] = [];
@@ -41,10 +44,12 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
 
   function drawNet() {
     const side = 46;
-    const matrices = foldMatrices(0);
-    $('.box-net').innerHTML = `<svg viewBox="0 0 166 208" role="img" aria-label="十字の展開図。中心が１、右が２、左が３、上が４、下が５、４の上が６。">${BOX_FACES.map(face => {
+    const matrices = foldMatrices(0,faces());
+    const centers=[...matrices.values()].map(m=>new THREE.Vector3().applyMatrix4(m));
+    const minX=Math.min(...centers.map(p=>p.x)),maxX=Math.max(...centers.map(p=>p.x)),minY=Math.min(...centers.map(p=>p.y)),maxY=Math.max(...centers.map(p=>p.y));
+    $('.box-net').innerHTML = `<svg viewBox="0 0 ${(maxX-minX+1)*side+20} ${(maxY-minY+1)*side+20}" role="img" aria-label="${CUBE_NETS[netIndex].name}の展開図。色と番号で同じ面をさがせます。">${faces().map(face => {
       const center = new THREE.Vector3().applyMatrix4(matrices.get(face.id)!);
-      const x = 60 + center.x*side; const y = 110-center.y*side;
+      const x = 10 + (center.x-minX)*side; const y = 10+(maxY-center.y)*side;
       return `<g><rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${face.color}" stroke="#294f49" stroke-width="1.5"/><text x="${x+side/2}" y="${y+side/2+6}" text-anchor="middle" fill="#294f49" font-size="19" font-weight="700">${face.id}</text></g>`;
     }).join('')}</svg>`;
   }
@@ -54,8 +59,8 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
     const viewDirection = stage.camera.getWorldDirection(new THREE.Vector3());
     stage.scene.updateMatrixWorld(true);
     const ray = new THREE.Raycaster();
-    for (const face of BOX_FACES) {
-      const pose = facePose(face.id,amount);
+    for (const face of faces()) {
+      const pose = facePose(face.id,amount,faces());
       const facing = -pose.normal.dot(viewDirection);
       const label = labels.get(face.id)!;
       // A billboard can intersect its slanted face. Draw the label above the face,
@@ -71,7 +76,7 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
     stage = createThreeStage(host,{span:5.2,position:new THREE.Vector3(5,4,8),target:new THREE.Vector3(0,.45,.35)});
     const geometry = new THREE.PlaneGeometry(1,1);
     const edgeGeometry = new THREE.EdgesGeometry(geometry);
-    for (const face of BOX_FACES) {
+    for (const face of faces()) {
       const mesh = new THREE.Mesh(geometry,new THREE.MeshStandardMaterial({color:face.color,side:THREE.DoubleSide,roughness:.95}));
       mesh.matrixAutoUpdate = false;
       mesh.add(new THREE.LineSegments(edgeGeometry,new THREE.LineBasicMaterial({color:0x294f49})));
@@ -97,8 +102,13 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
     slider.value=String(Math.round(amount*100));
     $('#box-fold-output').textContent=`${Math.round(amount*100)}%`;
     if (stage) {
-      const matrices=foldMatrices(amount);
+      const matrices=foldMatrices(amount,faces());
       meshes.forEach((mesh,id)=>mesh.matrix.copy(matrices.get(id)!));
+      const center=new THREE.Vector3();
+      for(const m of matrices.values())center.add(new THREE.Vector3().applyMatrix4(m));
+      center.divideScalar(6);
+      const delta=center.clone().sub(stage.controls.target);
+      stage.camera.position.add(delta);stage.controls.target.copy(center);stage.camera.lookAt(center);
       stage.setSpan(5.2-2.5*amount);
       updateLabels(); stage.render();
     }
@@ -121,7 +131,7 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
     selected=null;
     const target=questions[questionIndex];
     $('.task-title').textContent=`${target}の面の、向かいは？`;
-    $('.box-answers').innerHTML=BOX_FACES.filter(face=>face.id!==target).map(face=>`<button type="button" class="button box-answer" data-face="${face.id}" aria-pressed="false"><span style="background:${face.color}">${face.id}</span></button>`).join('');
+    $('.box-answers').innerHTML=faces().filter(face=>face.id!==target).map(face=>`<button type="button" class="button box-answer" data-face="${face.id}" aria-pressed="false"><span style="background:${face.color}">${face.id}</span></button>`).join('');
     $('.box-answers').querySelectorAll<HTMLButtonElement>('button').forEach(button=>button.addEventListener('click',()=>{
       selected=Number(button.dataset.face) as FaceId;
       $('.box-answers').querySelectorAll('button').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
@@ -136,10 +146,10 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
   $('#box-check').addEventListener('click',()=>{
     const target=questions[questionIndex];
     if(selected===null)return;
-    if(selected===oppositeFace(target)) {
+    if(selected===oppositeFace(target,faces())) {
       feedback.className='feedback success';
       feedback.textContent=`発見！ ${target}と${selected}は、向かい合う面だね。箱を回してたしかめよう。`;
-      context.onComplete('box-'+target,`${target}の面の向かい`);
+      context.onComplete(netIndex===0?'box-'+target:`box-net-${CUBE_NETS[netIndex].id}-${target}`,`${CUBE_NETS[netIndex].name}・${target}の面の向かい`);
       animateTo(1);
     } else {
       feedback.className='feedback error';
@@ -150,7 +160,14 @@ export function mountBox(container: HTMLElement, context: GameContext): () => vo
   $('#box-hint').addEventListener('click',()=>{$('.hint').hidden=!$('.hint').hidden;});
   slider.addEventListener('input',()=>{cancelAnimationFrame(animation);setAmount(Number(slider.value)/100);});
   container.querySelectorAll<HTMLButtonElement>('[data-fold]').forEach(button=>button.addEventListener('click',()=>animateTo(Number(button.dataset.fold))));
-  $('#box-home-view').addEventListener('click',()=>stage?.setCamera(new THREE.Vector3(5,4,8),new THREE.Vector3(0,.45,.35)));
+  $('#box-home-view').addEventListener('click',()=>{
+    if(stage){const center=stage.controls.target.clone();stage.setCamera(center.clone().add(new THREE.Vector3(5,4,8)),center);}
+  });
+  container.querySelectorAll<HTMLButtonElement>('[data-cube-net]').forEach(button=>button.addEventListener('click',()=>{
+    netIndex=Number(button.dataset.cubeNet);questionIndex=0;questions=netIndex===0?[1,2,4]:[1,2,5];
+    container.querySelectorAll<HTMLElement>('[data-cube-net]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    drawNet();showQuestion();context.onNarrate?.(`${CUBE_NETS[netIndex].name}。どの面が向かい合うかな？`);
+  }));
   drawNet(); showQuestion();
   return ()=>{disposed=true;cancelAnimationFrame(animation);textures.forEach(texture=>texture.dispose());labels.forEach(label=>label.material.dispose());stage?.dispose();};
 }

@@ -37,7 +37,8 @@ function copyBlocks(blocks: readonly Block[]): Block[] {
   return copy;
 }
 
-export function blockPreviewSvg(blocks: readonly Block[], view: ConstructionView = 'diagonal'): string {
+export interface BlockPreviewOptions { showOrigin?: boolean; boardOutline?: { color: string; width: number } }
+export function blockPreviewSvg(blocks: readonly Block[], view: ConstructionView = 'diagonal', options: BlockPreviewOptions = {}): string {
   if (!Object.hasOwn(OFFSETS, view)) throw new RangeError('Unknown construction view.');
   const validated = copyBlocks(blocks);
   const direction = OFFSETS[view].clone().normalize();
@@ -67,6 +68,10 @@ export function blockPreviewSvg(blocks: readonly Block[], view: ConstructionView
   }
   // The coral front edge matches the button board's orientation.
   content += line([-1.5, .006, 1.5], [1.5, .006, 1.5], '#f19b79', .036);
+  if (options.boardOutline) {
+    // Draw floor annotations before cubes so buildings hide the rear edges.
+    content += `<polygon points="${points([[-1.5,.012,-1.5],[1.5,.012,-1.5],[1.5,.012,1.5],[-1.5,.012,1.5]])}" fill="none" stroke="${options.boardOutline.color}" stroke-width="${options.boardOutline.width}" stroke-linejoin="round"/>`;
+  }
 
   // For disjoint cubes on this grid, overlapping projections have the same
   // back-to-front order on the positive x/y/z camera directions.
@@ -84,7 +89,7 @@ export function blockPreviewSvg(blocks: readonly Block[], view: ConstructionView
   // This annotation sits just beyond the 00 corner and remains visible even
   // when that corner is occupied, including in exact front and side views.
   const [markerX, markerY] = point(ORIGIN_MARKER.x, ORIGIN_MARKER.y, ORIGIN_MARKER.z);
-  content += `<circle cx="${markerX}" cy="${markerY}" r=".13" fill="#e6c573" stroke="#294f49" stroke-width=".02"/>`;
+  if (options.showOrigin !== false) content += `<circle cx="${markerX}" cy="${markerY}" r=".13" fill="#e6c573" stroke="#294f49" stroke-width=".02"/>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-SPAN / 2} ${-SPAN / 2} ${SPAN} ${SPAN}" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style="display:block;width:100%;height:100%;background:#f9f6ed">${content}</svg>`;
 }
 
