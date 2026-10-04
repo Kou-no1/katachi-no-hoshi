@@ -1,6 +1,8 @@
 import type { LabId } from './types';
+import { LEGACY_MISSIONS } from './learning/legacy';
 export interface LearningLab { id:LabId; name:string; stage:string; caption:string; goal:number; icon:string; }
 export const LEARNING_LABS: readonly LearningLab[] = [
+  {id:'preschool',name:'はじめのかたちあそび',stage:'やさしい入口',caption:'形・位置・もよう・比較・積み木',goal:72,icon:'<circle cx="18" cy="21" r="11" fill="#ed9a78"/><path d="M37 10h18v22H37Z" fill="#81b8a2"/><path d="m32 36 19 23H13Z" fill="#e6c573"/>'},
   {id:'puzzle',name:'かたち工房',stage:'さわって合わせる',caption:'ピースを動かして、形をつくる',goal:2,icon:'<path d="M9 49V15h34Z" fill="#ed9a78"/><path d="M18 54h37V17Z" fill="#80b49d"/>'},
   {id:'blocks',name:'ブロック建築',stage:'見て、作る',caption:'かくれたブロックと、自分の基地',goal:6,icon:'<path d="m12 24 20-11 20 11-20 11Z" fill="#bad5c6"/><path d="M12 24v24l20 11V35Z" fill="#82b59f"/><path d="M32 35v24l20-11V24Z" fill="#4e8974"/>'},
   {id:'transform',name:'かたちの変身',stage:'平面を考える',caption:'対称・拡大縮小・面積',goal:9,icon:'<path d="M6 18h20v28H6Z" fill="#ed9a78"/><path d="M38 18h20v28H38Z" fill="#89b5d1"/><path d="M32 8v48" stroke="#294f49" stroke-width="2" stroke-dasharray="4 4"/>'},
@@ -8,4 +10,8 @@ export const LEARNING_LABS: readonly LearningLab[] = [
   {id:'reconstruction',name:'３つの図から作る',stage:'立体を読みとる',caption:'前・横・上の図から復元',goal:3,icon:'<path d="M5 13h20v20H5ZM36 13h22v20H36ZM21 41h22v18H21Z" fill="#b7a1c8"/><path d="m26 28 6 10 5-10" fill="none" stroke="#294f49" stroke-width="2"/>'},
   {id:'solids',name:'くるくる・切ってみる',stage:'中学につながる空間',caption:'回転体と、立体の断面',goal:6,icon:'<ellipse cx="22" cy="17" rx="14" ry="7" fill="#bad5c6"/><path d="M8 17v28c0 10 28 10 28 0V17" fill="#81b8a2"/><path d="m43 10 17 43H38Z" fill="#e6c573"/>'},
 ];
-export const labCompletedCount=(id:LabId,completed:Record<string,string>)=>Object.keys(completed).filter(key=>key.startsWith(id+'-')).length;
+const preschoolIds = new Set(['P01','P05','P10','P04','P14','P17'].flatMap(unit=>Array.from({length:12},(_,i)=>`preschool-${unit}-${String(i+1).padStart(2,'0')}`)));
+/** Count known mission IDs so old or malformed saves cannot complete a new lab. */
+export const labCompletedCount=(id:LabId,completed:Record<string,string>)=>id==='preschool'
+  ? Object.keys(completed).filter(key=>preschoolIds.has(key)).length
+  : LEGACY_MISSIONS.filter(mission=>mission.lab===id && Object.hasOwn(completed,mission.id)).length;

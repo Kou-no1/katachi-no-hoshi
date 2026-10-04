@@ -1,0 +1,33 @@
+.pre-welcome { margin-bottom:18px; }
+.pre-unit-nav { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px; }
+.pre-unit { text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;padding:15px; }
+.pre-unit strong { font-size:15px; }.pre-unit span,.pre-unit small { color:var(--muted);font-size:11px;line-height:1.8; }
+.pre-unit.selected,.pre-task-list .selected,.pre-controller .selected { background:#d9ead9;border-color:#739c81; }
+.pre-intro { margin-bottom:18px; }.pre-intro .task-description { margin-bottom:12px; }
+.pre-task-top { display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px; }
+.pre-task-list { display:grid;grid-template-columns:repeat(12,minmax(44px,1fr));gap:6px;margin-bottom:12px; }
+.pre-task-list .button { padding:7px 3px; }
+.pre-workspace.stage-workspace { grid-template-columns:minmax(0,1fr) 170px; }
+.pre-figure { min-width:0;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#f9f6ed;gap:16px; }
+.pre-figure > svg { display:block;width:100%;max-height:380px; }.pre-figure .small-text { text-align:center; }
+.pre-figure-label { font-size:14px;font-weight:700;text-align:center;line-height:2; }
+.pre-shape-reference { width:min(100%,280px); }.pre-shape-reference svg { width:100%;display:block; }
+.pre-controller.stage-controller { display:flex;flex-direction:column;gap:12px;padding:20px 12px; }
+.pre-controller .button { width:100%;min-width:44px;min-height:44px;padding:8px 4px;font-size:12px; }
+.pre-options { display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));gap:6px; }.pre-options .button { display:flex;flex-direction:column;align-items:center;gap:2px; }.pre-options svg { width:58px;height:58px;max-width:100%; }.pre-options span { font-size:13px; }
+.pre-piece-options,.pre-arrow-controls,.pre-view-controls { display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));gap:6px; }.pre-piece-dot { display:inline-block;width:10px;height:10px;margin-right:5px;border-radius:50%; }
+.pre-common-controls { display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--line); }
+.pre-common-controls .hint { font-size:11px;padding:8px;line-height:2; }
+.pre-map { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:min(100%,330px);gap:5px; }
+.pre-map-cell { aspect-ratio:1;position:relative;background:#fffdf8;border:1px solid #bbcebe;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-direction:column; }
+.pre-map-cell small { position:absolute;top:3px;left:6px;font-size:11px;color:#6b8173; }.pre-map-cell span { font-size:32px; }.pre-map-cell p { font-size:11px; }.pre-map-cell.selected { background:#e6ecd7;outline:2px solid #80916a; }
+.pre-observer { font-size:12px;text-align:center;line-height:2; }.pre-observer-spacer { color:var(--muted); }
+.pre-cell-controls { display:grid;grid-template-columns:repeat(3,minmax(44px,1fr));gap:4px; }.pre-cell-controls .button { display:flex;flex-direction:column;align-items:center;justify-content:center; }.pre-cell-controls small { font-size:9px; }.pre-cell-controls strong { font-size:16px; }
+.pre-pattern-unit { display:flex;border:2px dashed #8da482;border-radius:12px;gap:6px;padding:8px;max-width:100%; }.pre-pattern-unit span { width:54px;min-width:0; }.pre-pattern-unit svg { width:100%; }
+.pre-pattern-sequence { display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:450px; }.pre-pattern-item { width:64px;display:flex;flex-direction:column;align-items:center; }.pre-pattern-item small { font-size:10px; }.pre-pattern-item svg { width:64px;max-width:100%; }.pre-pattern-item strong { height:64px;display:grid;place-items:center;font-size:30px;background:#edead9;width:100%;border-radius:10px; }
+.pre-build-world { width:100%;min-width:0; }.pre-build-world > svg { display:block;width:100%;height:210px; }.pre-projections { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px; }.pre-projections p { text-align:center;font-size:12px; }.pre-projections svg { width:100%;height:120px; }
+.pre-result { padding:20px;border-top:1px solid var(--line); }.pre-result .feedback { margin-top:0;margin-bottom:12px; }.pre-explanation { padding:12px;background:#edf3e6;border-radius:12px;margin-bottom:14px; }.pre-save-status { margin-top:12px; }
+.pre-adult { margin-top:18px;font-size:13px;line-height:2.2; }.pre-adult summary { cursor:pointer; }.pre-adult > div { margin-top:16px; }.pre-adult h4 { margin:14px 0 4px; }.pre-adult p { margin-bottom:12px; }.pre-adult a { display:inline-block;text-decoration:none;margin-top:10px; }
+@media(max-width:1000px){.pre-task-list{grid-template-columns:repeat(6,minmax(44px,1fr))}}
+@media(max-width:760px){.pre-unit-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pre-unit{padding:12px}.pre-workspace.stage-workspace{grid-template-columns:minmax(0,1fr) 116px}.pre-workspace-wide.stage-workspace{grid-template-columns:minmax(0,1fr) 158px}.pre-controller.stage-controller{padding:14px 8px}.pre-figure{padding:14px;min-height:320px;gap:12px}.pre-figure-label{font-size:12px}.pre-options{grid-template-columns:minmax(0,1fr)}.pre-options svg{height:52px;width:52px}.pre-map-cell span{font-size:25px}.pre-pattern-item{width:48px}.pre-pattern-item svg{width:48px}.pre-pattern-item strong{height:48px}.pre-build-world>svg{height:170px}}
+@media(max-width:460px){.pre-task-list{grid-template-columns:repeat(4,minmax(44px,1fr));gap:4px}.pre-task-top{align-items:flex-start}.pre-task-top .button{font-size:11px}.pre-figure{padding:8px;gap:10px}.pre-workspace.stage-workspace{grid-template-columns:minmax(0,1fr) 110px}.pre-workspace-wide.stage-workspace{grid-template-columns:minmax(0,1fr) 158px}.pre-map-cell span{font-size:21px}.pre-map-cell p{font-size:9px}.pre-map-cell small{left:3px;font-size:9px}.pre-unit strong{font-size:13px}.pre-controller .small-text{font-size:10px}.pre-pattern-item{width:40px}.pre-pattern-item svg{width:40px}.pre-pattern-item strong{height:40px}.pre-pattern-unit span{width:40px}.pre-build-world>svg{height:130px}.pre-projections{grid-template-columns:minmax(0,1fr)}.pre-projections svg{height:90px}.pre-result{padding:14px}}

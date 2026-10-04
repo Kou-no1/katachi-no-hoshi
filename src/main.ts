@@ -3,14 +3,15 @@ import { readProgress, saveProgress } from './storage';
 import type { LabId, MountLab } from './types';
 import { baseText, observeFurigana } from './shared/furigana';
 import { LEARNING_LABS, labCompletedCount } from './curriculum';
+import { resetLearningRecords } from './learning/records';
 
 const app = document.getElementById('app')!;
 
 app.innerHTML = `
   <a class="skip-link" href="#lab-content">あそびにすすむ</a>
   <header class="site-header wrap">
-    <a class="brand" href="#puzzle" aria-label="カタチのほし ホーム"><span class="brand-mark" aria-hidden="true">✦</span><span>カタチのほし<small>図形あそびの研究所</small></span></a>
-    <div class="header-actions"><span class="prototype-label">６つのラボで、形の冒険</span><button class="button button-soft sound-toggle" type="button" aria-pressed="false">よみあげ：オフ</button></div>
+    <a class="brand" href="#preschool" aria-label="カタチのほし ホーム"><span class="brand-mark" aria-hidden="true">✦</span><span>カタチのほし<small>図形あそびの研究所</small></span></a>
+    <div class="header-actions"><span class="prototype-label">やさしい入口から、空間の冒険</span><button class="button button-soft sound-toggle" type="button" aria-pressed="false">よみあげ：オフ</button></div>
   </header>
   <main class="wrap">
     <section class="welcome" aria-labelledby="welcome-title">
@@ -22,11 +23,11 @@ app.innerHTML = `
     <section id="lab-content" class="lab-content" aria-label="図形のあそび"></section>
     <div class="next-adventure"><p class="small-text" id="journey-copy"></p><button type="button" class="button button-soft" id="next-lab">つぎのあそびへ</button></div>
     <section class="discovery" aria-labelledby="discovery-title"><div><p class="eyebrow">YOUR DISCOVERIES</p><h2 id="discovery-title">ひらめきの記録</h2><p id="progress-copy" class="small-text"></p></div><div id="progress-stars" class="progress-stars" aria-label="ラボごとの記録"></div></section>
-    <details class="adult-notes"><summary>おうちの方・先生へ</summary><div><p>形の組み合わせや制作から、対称・量・投影図・回転体・切断へ進む６つのラボです。初めは大人と一緒に操作し、慣れたら新しい図で予想を確かめます。学年や速さで競わず、何度でもやり直せます。</p><p>記録と作品はこのブラウザに保存します。名前の入力は不要で、学習記録を外部に送信する機能はありません。よみあげの声は端末の設定によって異なります。</p><p>初めての子には「どうなると思う？」、確かめた後は「何を見て分かった？」と声をかけてみてください。</p><button type="button" id="reset-progress" class="button button-soft">ひらめきの記録をリセット</button></div></details>
+    <details class="adult-notes"><summary>おうちの方・先生へ</summary><div><p>はじめのかたちあそびの６系統72課題から、制作・対称・量・投影図・回転体・切断へつながります。初めは大人と一緒に操作し、慣れたら新しい図で予想を確かめます。学年や速さで競わず、何度でもやり直せます。</p><p>記録と作品はこのブラウザに保存します。名前の入力は不要で、学習記録を外部に送信する機能はありません。よみあげの声は端末の設定によって異なります。</p><p>初めての子には「どうなると思う？」、確かめた後は「何を見て分かった？」と声をかけてみてください。</p><button type="button" id="reset-progress" class="button button-soft">ひらめきの記録をリセット</button></div></details>
   </main>
   <footer class="site-footer wrap"><span>✦ カタチのほし</span><span>あせらず、ためして、たしかめよう。</span></footer>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-  <dialog id="reset-dialog" class="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">記録をリセットしますか？</h2><p>星の記録をリセットします。作った建物と制作途中は、基地からまたひらけます。</p><form method="dialog" class="button-row"><button type="submit" class="button button-soft" value="cancel">やめる</button><button type="submit" class="button button-primary" value="reset">リセットする</button></form></dialog>
+  <dialog id="reset-dialog" class="reset-dialog" aria-labelledby="reset-title"><h2 id="reset-title">記録をリセットしますか？</h2><p>星と、はじめのかたちあそびの学習記録をリセットします。作った建物と制作途中は、基地からまたひらけます。</p><form method="dialog" class="button-row"><button type="submit" class="button button-soft" value="cancel">やめる</button><button type="submit" class="button button-primary" value="reset">リセットする</button></form></dialog>
 `;
 observeFurigana(app);
 
@@ -38,6 +39,7 @@ let toastTimer = 0;
 let mountRequest = 0;
 const content = document.getElementById('lab-content')!;
 const modules: Record<LabId, () => Promise<MountLab>> = {
+  preschool:()=>import('./labs/preschool').then(m=>m.mountPreschool),
   puzzle:()=>import('./labs/puzzle').then(m=>m.mountPuzzle),
   blocks:()=>import('./labs/block-hub').then(m=>m.mountBlockHub),
   box:()=>import('./labs/box-hub').then(m=>m.mountBoxHub),
@@ -48,10 +50,10 @@ const modules: Record<LabId, () => Promise<MountLab>> = {
 const names = Object.fromEntries(LEARNING_LABS.map(lab=>[lab.id,lab.name])) as Record<LabId,string>;
 
 function showProgress() {
-  const count = Object.keys(progress.completed).length;
+  const count = LEARNING_LABS.reduce((total,lab)=>total+labCompletedCount(lab.id,progress.completed),0);
   document.getElementById('progress-copy')!.textContent = count ? `${count}このミッションをたしかめたよ。違う形にもチャレンジ！` : 'ミッションをたしかめると、ここに星が増えるよ。';
   document.getElementById('progress-stars')!.innerHTML = (Object.keys(names) as LabId[]).map(id => {
-    const count = Object.keys(progress.completed).filter(key => key.startsWith(id + '-')).length;
+    const count = labCompletedCount(id,progress.completed);
     return `<div class="discovery-item ${count ? 'earned' : ''}"><span class="discovery-star" aria-hidden="true">${count ? '✦' : '✧'}</span><span>${names[id]}<small>${count ? count + 'こ発見' : 'これから発見'}</small></span></div>`;
   }).join('');
   for(const lab of LEARNING_LABS){
@@ -59,11 +61,11 @@ function showProgress() {
     document.querySelector<HTMLElement>(`[data-lab-count="${lab.id}"]`)!.textContent=`${count} / ${lab.goal} ひらめき`;
   }
   const next=LEARNING_LABS.find(lab=>labCompletedCount(lab.id,progress.completed)<lab.goal);
-  document.getElementById('journey-copy')!.textContent=next?`つぎの発見は「${next.name}」にもあるよ。何度でもためそう。`:'６つのラボのミッションをたしかめたね！ 別の作り方や、自由な作品にも挑戦しよう。';
+  document.getElementById('journey-copy')!.textContent=next?`つぎの発見は「${next.name}」にもあるよ。何度でもためそう。`:'いろんな形をたしかめたね！ 別の作り方や、自由な作品にも挑戦しよう。';
 }
 
-function speak(text: string) {
-  if (!sound || !('speechSynthesis' in window)) return;
+function speak(text: string, force = false) {
+  if ((!sound && !force) || !('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ja-JP';
@@ -88,6 +90,7 @@ async function openLab(id: LabId) {
   cleanup = mount(content, {
     reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
     onNarrate: speak,
+    onRead: text=>speak(text,true),
     getCompleted:()=>({...progress.completed}),
     onComplete(mission, label) {
       if (progress.completed[mission]) return;
@@ -122,7 +125,7 @@ document.getElementById('next-lab')!.addEventListener('click',()=>{
   const next=LEARNING_LABS[(index+1)%LEARNING_LABS.length].id;
   location.hash=next;document.getElementById('lab-content')!.scrollIntoView({behavior:'auto',block:'start'});
 });
-function parseHash(): LabId { const id = location.hash.slice(1); return Object.hasOwn(modules, id) ? id as LabId : 'puzzle'; }
+function parseHash(): LabId { const id = location.hash.slice(1); return Object.hasOwn(modules, id) ? id as LabId : 'preschool'; }
 
 const soundButton = document.querySelector<HTMLButtonElement>('.sound-toggle')!;
 if (!('speechSynthesis' in window)) { soundButton.disabled = true; soundButton.textContent = 'よみあげ：未対応'; }
@@ -130,13 +133,16 @@ soundButton.addEventListener('click', () => {
   sound = !sound;
   soundButton.textContent = `よみあげ：${sound ? 'オン' : 'オフ'}`;
   soundButton.setAttribute('aria-pressed', String(sound));
-  if (sound) speak(`${names[current ?? 'puzzle']}。${baseText(content.querySelector('.task-title'))} ${baseText(content.querySelector('.task-description'))}`);
+  if (sound) speak(`${names[current ?? 'preschool']}。${baseText(content.querySelector('.task-title'))} ${baseText(content.querySelector('.task-description'))}`);
   else speechSynthesis.cancel();
 });
 const resetDialog = document.getElementById('reset-dialog') as HTMLDialogElement;
 document.getElementById('reset-progress')!.addEventListener('click', () => { resetDialog.returnValue=''; resetDialog.showModal(); });
 resetDialog.addEventListener('close', () => {
   if (resetDialog.returnValue !== 'reset') return;
+  cleanup?.();
+  cleanup = undefined;
+  resetLearningRecords();
   progress = { version: 1, completed: {} };
   saveProgress(progress);
   showProgress();
