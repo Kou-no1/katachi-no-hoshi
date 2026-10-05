@@ -39,6 +39,14 @@ npm run preview
 
 `dist/` を静的Webサーバーで配信できます。ビルド後はThree.jsなどの実行コードも同梱され、外部CDNの読み込みはありません。`index.html` のファイル直接起動ではなくHTTPで開いてください。相対パス設定なので、ドメイン直下・サブディレクトリのどちらでも配信できます。
 
+## GitHub Pagesでの公開
+
+公開ページは [カタチのほし](https://manabitane.jp/katachi-no-hoshi/) です。
+
+GitHub PagesのSourceを「GitHub Actions」に設定し、`.github/workflows/deploy.yml` でテスト・ビルドを通過した `dist/` だけを公開します。`main` へのプッシュで自動更新され、Actionsから手動実行もできます。リポジトリ直下の `index.html` は開発用なので、そのままブランチから公開すると教材は起動しません。
+
+`vite.config.ts` の `base: './'` により、ビルド済みのスクリプト・スタイル・遅延読込は公開先のサブディレクトリ内を参照します。リポジトリ名を変更した場合は、GitHub Pagesの公開URLとポータル側のリンクも更新してください。
+
 ## 図形の正確さ
 
 平面はSVG、動く立体はThree.jsの正投影で描画しています。画面上の絵を問題ごとに手描きするのではなく、座標モデルから描画と答えを作ります。
